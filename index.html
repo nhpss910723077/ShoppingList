@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Shopping list example</title>
+    <style>
+        body {
+            width: 600px;
+            margin: 0 auto;
+            background-color: #00ffff;
+            padding: 0 20px 20px 20px;
+            border: 5px solid black;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+            li button {
+                font-size: 8px;
+                margin-left: 20px;
+                color: #666;
+            }
+
+        input {
+            width: 36px;
+        }
+
+        .labError {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>購物清單</h1>
+
+    <div>
+        <label>選擇商品:</label>
+        <select class="item-choose">
+            <option>番茄:15元/個</option>
+            <option>玉米:20元/個</option>
+            <option>馬鈴薯:10元/個</option>
+        </select>
+        <input class="quantity">
+        <button class="decrease">-</button>
+        <button class="increase">+</button>
+        <button class="buy">新增至購物車</button>
+        <label class="labError"></label>
+    </div>
+
+    <ul></ul>
+
+    <label class=" labTotal">總計:0元</label>
+
+    <script>
+        var list = document.querySelector("ul");
+        var itemChoose = document.querySelector("select");
+        var quantity = document.querySelector(".quantity");
+        var btnDecrease = document.querySelector(".decrease");
+        var btnIncrease = document.querySelector(".increase");
+        var btnBuy = document.querySelector(".buy");
+        var labTotal = document.querySelector(".labTotal");
+        var labError = document.querySelector(".labError");
+        var total = 0;
+        quantity.value = 1;
+
+        btnDecrease.addEventListener("click", function () {
+            quantity.value--;
+        });
+
+        btnIncrease.addEventListener("click", function () {
+            quantity.value++;
+        });
+
+        btnBuy.addEventListener("click", function () {
+            if (!isNaN(quantity.value) && quantity.value > 0) {
+                var myItem = itemChoose.value.slice(0, itemChoose.value.indexOf(":"));
+                var myprice = itemChoose.value.slice(itemChoose.value.indexOf(":") + 1, itemChoose.value.indexOf("元"));
+                var myquantity = quantity.value;
+                myprice = Number(myprice);
+
+                total += myprice * myquantity;
+                labTotal.textContent = "總計:" + total + "元";
+
+                var listItem = document.createElement("li");
+                var listText = document.createElement("span");
+                var listBtn = document.createElement("button");
+
+                listItem.appendChild(listText);
+                listText.textContent = myItem + myquantity + "個=" + myprice * myquantity + "元";
+                listItem.appendChild(listBtn);
+                listBtn.textContent = "刪除";
+                list.appendChild(listItem);
+
+                listBtn.addEventListener("click", function () {
+                    total -= myprice * myquantity;
+                    labTotal.textContent = "總計:" + total + "元";
+                    list.removeChild(listItem);
+                });
+                labError.textContent = ""
+                quantity.value = 1;
+                quantity.focus();
+            } else {
+                labError.textContent = "請輸入正確數字"
+            }
+        });
+    </script>
+</body>
+</html>
